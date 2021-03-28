@@ -1,0 +1,92 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>Count number of days</h1>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <h4>Select Dates</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.Label("Date 1", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextBox("txtFirstOne", null, new { @class = "", @readonly = "readonly" } )
+            @Html.ValidationMessage("txtFirstDate", "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Date 2", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextBox("txtSecondDate", null,  new { @class = "", @readonly= "readonly" } )
+            @Html.ValidationMessage("txtSecondDate", "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Calculate" class="btn btn-primary" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <p>@ViewBag.Message</p>
+            <p class="has-error">@ViewBag.Error</p>
+        </div>
+    </div>
+</div>
+}
+
+@section scripts
+{
+    <script>
+        $(function () {
+
+            var dateFormat = "dd/mm/yy";
+            function getDate(element) {
+                var date;
+                try {
+                    date = $.datepicker.parseDate(dateFormat, element.value);
+                } catch (error) {
+                    date = null;
+                }
+
+                return date;
+            }
+
+            from = $("#txtFirstOne").datepicker({
+                defaultDate: "+1w",
+                changeMonth: true,
+                changeYear: true,
+                showOn: "button",
+                buttonImage: "../content/images/calendar.gif",
+                buttonImageOnly: true,
+                buttonText: "Select date",
+                dateFormat: dateFormat
+            }).on("change", function () {
+                to.datepicker("option", "minDate", getDate(this));
+                });
+
+            to = $("#txtSecondDate").datepicker({
+                defaultDate: "+1w",
+                changeMonth: true,
+                changeYear: true,
+                showOn: "button",
+                buttonImage: "../content/images/calendar.gif",
+                buttonImageOnly: true,
+                buttonText: "Select date",
+                dateFormat: dateFormat
+            }).on("change", function () {
+                    from.datepicker("option", "maxDate", getDate(this));
+                });
+        });
+    </script>
+}
